@@ -7,7 +7,6 @@ RESET="\e[0m"
 echo "Paste your HTTP proxies below (Ctrl+D when finished):"
 echo
 
-# Read proxies from user input
 proxies=()
 while read line; do
     [[ -z "$line" ]] && continue
@@ -19,7 +18,7 @@ echo "Testing ${#proxies[@]} proxies..."
 echo
 
 for proxy in "${proxies[@]}"; do
-    if timeout 3 curl -s -x "$proxy" http://example.com >/dev/null; then
+    if timeout 3 wget -q -e use_proxy=yes -e http_proxy="$proxy" http://example.com -O /dev/null; then
         echo -e "${GREEN}[ALIVE]${RESET} $proxy"
     else
         echo -e "${RED}[DEAD]${RESET} $proxy"
