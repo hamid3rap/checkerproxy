@@ -1,0 +1,27 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+GREEN="\e[32m"
+RED="\e[31m"
+RESET="\e[0m"
+
+echo "Paste your HTTP proxies below (Ctrl+D when finished):"
+echo
+
+# Read proxies from user input
+proxies=()
+while read line; do
+    [[ -z "$line" ]] && continue
+    proxies+=("$line")
+done
+
+echo
+echo "Testing ${#proxies[@]} proxies..."
+echo
+
+for proxy in "${proxies[@]}"; do
+    if timeout 3 curl -s -x "$proxy" http://example.com >/dev/null; then
+        echo -e "${GREEN}[ALIVE]${RESET} $proxy"
+    else
+        echo -e "${RED}[DEAD]${RESET} $proxy"
+    fi
+done
